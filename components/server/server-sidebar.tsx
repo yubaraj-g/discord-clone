@@ -29,7 +29,7 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
       },
       members: {
         include: {
-          proflie: true,
+          profile: true,
         },
         orderBy: {
           role: "asc",
@@ -48,7 +48,7 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
     (channel) => channel.type === ChannelType.VIDEO
   );
 
-  const members = server?.members.filter((member) => member.proflie.id);
+  const members = server?.members.filter((member) => member.profile.id);
 
   if (!server) {
     return redirect("/");
