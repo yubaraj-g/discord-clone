@@ -34,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   name: z
@@ -48,19 +49,28 @@ const formSchema = z.object({
 });
 
 export const CreateChannelModal = () => {
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
   const params = useParams();
 
   const isModalOpen = isOpen && type === "createChannel";
+  const { channelType } = data;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: ChannelType.TEXT,
+      type: channelType || ChannelType.TEXT,
     },
   });
+
+  useEffect(() => {
+    if (channelType) {
+      form.setValue("type", channelType);
+    } else {
+      form.setValue("type", ChannelType.TEXT);
+    }
+  }, [channelType, form]);
 
   const isLoading = form.formState.isSubmitting;
 
@@ -121,8 +131,10 @@ export const CreateChannelModal = () => {
               <FormField
                 control={form.control}
                 name="type"
-                render={({ field }) => (
-                  <FormItem>
+                render={({ field }) => {
+                  console.log(field.value);
+
+                  return <FormItem>
                     <FormLabel>Channel Type</FormLabel>
                     <Select
                       disabled={isLoading}
@@ -147,8 +159,8 @@ export const CreateChannelModal = () => {
                       </SelectContent>
                     </Select>
                     <FormMessage />
-                  </FormItem>
-                )}
+                  </FormItem>;
+                }}
               />
             </div>
             <DialogFooter className="bg-gray-100 px-6 py-4">
